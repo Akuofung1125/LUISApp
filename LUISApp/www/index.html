@@ -153,6 +153,7 @@
             var l_KeyWord = "";
             var l_LandAttr = "";
             var l_Rate = "";
+            var l_OpenState = "";
             var txtKeyword = $('#txtKeyword').val();
 
             console.log(encodeURI(encodeURI(txtKeyword)));
@@ -176,59 +177,80 @@
                                         console.log(l_KeyWord);
                                     }
 
-                                    if (val2.type.indexOf("設施項目::排球場") >= 0) {
+                                    if (val2.role.indexOf("排球場") >= 0) {
 
                                         l_KeyWord = "&GymType=排球場";
                                         console.log(l_KeyWord);
                                     }
 
-                                    if (val2.type.indexOf("設施項目::操場") >= 0) {
+                                    if (val2.role.indexOf("操場") >= 0) {
 
                                         l_KeyWord = "&GymType=操場";
                                         console.log(l_KeyWord);
                                     }
 
-                                    if (val2.type.indexOf("設施項目::桌球館") >= 0) {
+                                    if (val2.role.indexOf("桌球館") >= 0) {
 
                                         l_KeyWord = "&GymType=桌球館";
                                         console.log(l_KeyWord);
                                     }
 
-                                    if (val2.type.indexOf("設施項目::棒球場") >= 0) {
+                                    if (val2.role.indexOf("棒球場") >= 0) {
 
                                         l_KeyWord = "&GymType=棒球場";
                                         console.log(l_KeyWord);
                                     }
 
-                                    if (val2.type.indexOf("設施項目::游泳池") >= 0) {
+                                    if (val2.role.indexOf("游泳池") >= 0) {
 
                                         l_KeyWord = "&GymType=游泳池";
                                         console.log(l_KeyWord);
                                     }
 
-                                    if (val2.type.indexOf("設施項目::網球場") >= 0) {
+                                    if (val2.role.indexOf("網球場") >= 0) {
 
                                         l_KeyWord = "&GymType=網球場";
                                         console.log(l_KeyWord);
                                     }
 
-                                    if (val2.type.indexOf("設施項目::羽球場") >= 0) {
+                                    if (val2.role.indexOf("羽球場") >= 0) {
 
                                         l_KeyWord = "&GymType=羽球場";
                                         console.log(l_KeyWord);
                                     }
 
-                                    if (val2.type.indexOf("設施項目::足球場") >= 0) {
+                                    if (val2.role.indexOf("足球場") >= 0) {
 
                                         l_KeyWord = "&GymType=足球場";
                                         console.log(l_KeyWord);
                                     }
 
-                                    if (val2.type.indexOf("設施項目::高爾夫球場") >= 0) {
+                                    if (val2.role.indexOf(" 高爾夫球場") >= 0) {
 
                                         l_KeyWord = "&GymType=高爾夫球場";
                                         console.log(l_KeyWord);
                                     }
+                                }
+
+                                if (val2.type.indexOf("開放情況") >= 0) {
+                                    if (val2.role.indexOf("免費開放使用") >= 0) {
+
+                                        l_OpenState = "&OpenState=免費開放使用";
+                                        console.log(l_OpenState);
+                                    }
+
+                                    if (val2.role.indexOf("付費開放使用") >= 0) {
+
+                                        l_OpenState = "&OpenState=付費開放使用";
+                                        console.log(l_OpenState);
+                                    }
+
+                                    if (val2.role.indexOf("不開放使用") >= 0) {
+
+                                        l_OpenState = "&OpenState=不開放使用";
+                                        console.log(l_OpenState);
+                                    }
+
                                 }
 
                                 //if (val2.type.indexOf("設施屬性") >= 0) {
@@ -284,8 +306,13 @@
                     if (l_City != "") {
                         l_IPlayUrl += "&City=" + encodeURI(l_City);
                     }
+
                     if (l_KeyWord != "") {
                         l_IPlayUrl += encodeURI(l_KeyWord);
+                    }
+
+                    if (l_OpenState != "") {
+                        l_IPlayUrl += encodeURI(l_OpenState);
                     }
 
                     //分析Data ，組運動場館URL
