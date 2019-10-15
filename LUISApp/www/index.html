@@ -70,7 +70,7 @@
                                 <!-- Ajax response -->
                                 <div id="subscription-response" class="ajax-response"></div>
                                 <div>
-                                    <ul id="result"></ul>
+                                    
                                 </div>
                             </div>
 
@@ -103,7 +103,7 @@
 
                     <div class="row multi-columns-row post-columns" id="InnerContent">
 
-
+                        <ul id="result"></ul>
 
 
                     </div><!-- .row -->
@@ -157,6 +157,32 @@
             var txtKeyword = $('#txtKeyword').val();
 
             console.log(encodeURI(encodeURI(txtKeyword)));
+
+            var l_Latitude = "";
+            var l_Longitude = "";
+            var API_Latitude = "";
+            var API_Longitude = "";
+            
+            
+
+            
+                //取得定位數據
+                var onSuccess = function (position) {
+                    l_Latitude = position.coords.latitude
+                    l_Longitude = position.coords.longitude
+                    console.log(l_Latitude)
+                };
+                function onError(error) {
+                    console.log(error.message)
+                }
+
+                //开始获取定位数据
+                navigator.geolocation.getCurrentPosition(onSuccess, onError);
+            
+
+            
+
+       
             $.ajax({
                 url: l_LuisUrl + encodeURI(encodeURI(txtKeyword)),
                 type: 'get',
@@ -326,11 +352,37 @@
                         success: function (data) {
 
                             $('#result').empty();
-                            $.each(data, function (i, item) {
-                                var content = "index:" + i + "; Name: " + item.Name + "; Id: " + item.GymFuncList;
+
+                            for (var j = 0; j < data.length; j++) {
+                                data[j].Distance = getDistance(l_Longitude, l_Latitude, data[j].LatLng.split(",")[1], data[j].LatLng.split(",")[0])
+                            }
+
+                            var l_DataList = null;
+
+                            l_DataList = new JSLINQ(data)
+                                .OrderBy(function (api_ListData) { return api_ListData.Distance })
+                                .ToArray();
+
+                            $.each(l_DataList, function (i, item) {
+
+                                //API_LatLng= item.LatLng.split(",");
+                                //l_Longitude = API_LatLng[0];
+                                //l_Latitude = API_LatLng[1];
+                                //var z = Number(l_Longitude);
+                                //var x = Number(l_Latitude);
+                                
+
+                                
+
+
+                                var content = "Distance:" + item.Distance + "; Name: " + item.Name + "; Id: " + item.GymFuncList;
                                 var li = "<li>" + content + "</li>";
                                 $('#result').append(li);
+                                
+                                
                             });
+                            
+
                         },
                         error: function (XMLHttpRequest, textStatus, thrownError) {
                             console.log("no");
@@ -343,8 +395,28 @@
                 error: function (XMLHttpRequest, textStatus, thrownError) {
                     console.log(xhr.responseText);
                 }
-            });
+                });
+            
         }
+
+        function rad(d) {
+            return d * Math.PI / 180.0;
+        }
+
+        function getDistance(lng1, lat1, lng2, lat2) {
+            var EARTH_RADIUS = 6378.137; //地球半徑
+            var radLat1 = rad(lat1);
+            var radLat2 = rad(lat2);
+            var a = radLat1 - radLat2;
+            var b = rad(lng1) - rad(lng2);
+            var s = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(a / 2), 2)
+                + Math.cos(radLat1) * Math.cos(radLat2)
+                * Math.pow(Math.sin(b / 2), 2)));
+            s = s * EARTH_RADIUS;
+            s = Math.round(s * 10000) / 10000;
+            return s;
+        }
+
     </script>
 
     <!-- CSS -->
