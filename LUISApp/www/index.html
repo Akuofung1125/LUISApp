@@ -70,7 +70,7 @@
                                 <!-- Ajax response -->
                                 <div id="subscription-response" class="ajax-response"></div>
                                 <div>
-                                    
+
                                 </div>
                             </div>
 
@@ -103,7 +103,7 @@
 
                     <div class="row multi-columns-row post-columns" id="InnerContent">
 
-                        <ul id="result"></ul>
+
 
 
                     </div><!-- .row -->
@@ -162,27 +162,27 @@
             var l_Longitude = "";
             var API_Latitude = "";
             var API_Longitude = "";
-            
-            
 
-            
-                //取得定位數據
-                var onSuccess = function (position) {
-                    l_Latitude = position.coords.latitude
-                    l_Longitude = position.coords.longitude
-                    console.log(l_Latitude)
-                };
-                function onError(error) {
-                    console.log(error.message)
-                }
 
-                //开始获取定位数据
-                navigator.geolocation.getCurrentPosition(onSuccess, onError);
-            
 
-            
 
-       
+            //取得定位數據
+            var onSuccess = function (position) {
+                l_Latitude = position.coords.latitude
+                l_Longitude = position.coords.longitude
+                console.log(l_Latitude)
+            };
+            function onError(error) {
+                console.log(error.message)
+            }
+
+            //开始获取定位数据
+            navigator.geolocation.getCurrentPosition(onSuccess, onError);
+
+
+
+
+
             $.ajax({
                 url: l_LuisUrl + encodeURI(encodeURI(txtKeyword)),
                 type: 'get',
@@ -351,38 +351,90 @@
                         contentType: 'application/json',
                         success: function (data) {
 
-                            $('#result').empty();
+
+                            $('#InnerContent').empty();
 
                             for (var j = 0; j < data.length; j++) {
+                                //var C = data[j].GymID
+                                //var l_IPlayUrlCharge = " http://iplay.sa.gov.tw/odata/Gym(" + C + ")?$format=application/json;odata.metadata=none&$expand=GymFuncData"
                                 data[j].Distance = getDistance(l_Longitude, l_Latitude, data[j].LatLng.split(",")[1], data[j].LatLng.split(",")[0])
+                                //data[j].OpenCharge = getOpenCharge(l_IPlayUrlCharge)
                             }
 
                             var l_DataList = null;
+
+                            //var l_DataList2 = null;
 
                             l_DataList = new JSLINQ(data)
                                 .OrderBy(function (api_ListData) { return api_ListData.Distance })
                                 .ToArray();
 
-                            $.each(l_DataList, function (i, item) {
-
-                                //API_LatLng= item.LatLng.split(",");
-                                //l_Longitude = API_LatLng[0];
-                                //l_Latitude = API_LatLng[1];
-                                //var z = Number(l_Longitude);
-                                //var x = Number(l_Latitude);
-                                
-
-                                
 
 
-                                var content = "Distance:" + item.Distance + "; Name: " + item.Name + "; Id: " + item.GymFuncList;
-                                var li = "<li>" + content + "</li>";
-                                $('#result').append(li);
-                                
-                                
-                            });
-                            
+                            for (var k = 0; k < 5; k++) {
 
+                                var C = l_DataList[k].GymID
+
+                                var l_IPlayUrlCharge = " http://iplay.sa.gov.tw/odata/Gym(" + C + ")?$format=application/json;odata.metadata=none&$expand=GymFuncData"
+
+                                l_DataList[k].OpenCharge = getOpenCharge(l_IPlayUrlCharge)
+                                console.log(l_DataList[k].OpenCharge)
+
+                                //$.ajax({
+                                //    url: l_IPlayUrlCharge,
+                                //    type: 'get',
+                                //    dataType: 'json',
+                                //    contentType: 'application/json',
+                                //    success: function (data2) {
+
+                                //        var l_DataList2 = null;
+
+                                //        if (data2.GymFuncData[0].OpenCharge == null) {
+
+                                //            data2.GymFuncData[0].OpenCharge = "沒有資料";
+                                //        }
+
+                                //        l_DataList2 += data2;
+
+                                //        l_DataList += l_DataList2
+                                //    }
+                                //})
+                            }
+
+
+                            var l_content = "";
+                            var l_headerContent = "      <h2 class='module-title font-alt'>以下是最適合您且最近的運動場館</h2>";
+                            l_headerContent += "  <div class='module-subtitle font-serif' >";
+                            l_headerContent += "我們依您目前的位置，搜尋出距離您最近到最遠的運動場地，您可以往下滑行查看。";
+                            l_headerContent += "</div >";
+                            var l_length = (l_DataList.length > 30) ? 30 : l_DataList.length
+
+                            //$.each(l_DataList, function (i, item) {
+                            for (var i = 0; i < data.length; i++) {
+                                l_content += "<div class='col-sm-6 col-md-4 col-lg-4'>";
+                                l_content += " <div class='post mb-20' >";
+                                l_content += " <div class='post-thumbnail'>";
+                                l_content += "   <a href='javascript:void(0)'><img src='" + l_DataList[i].Photo1 + "' alt=''></a>";
+                                l_content += " </div>";
+                                l_content += "   <div class='post-header font-alt'>";
+                                l_content += "  <h2 class='post-title'><a href='blog-single-left.html'>" + l_DataList[i].Name + "</a></h2>";
+                                l_content += "   <div class='post-meta'>";
+                                l_content += l_DataList[i].GymFuncList + "<br>電話:" + l_DataList[i].OperationTel + "<br>距離：" + l_DataList[i].Distance + "<br>收費方式:" + l_DataList[i].OpenCharge;
+                                l_content += " </div>";
+                                l_content += " </div>";
+                                l_content += "  <div class='post-more'>";
+                                //l_content += "      <a href='blog-single-right.html' class='more-link'>Read more</a>";
+                                l_content += "  </div>";
+                                l_content += "  </div>";
+                                l_content += "  </div >";
+                            }
+                            $('#HeaderContent').html(l_headerContent);
+                            //var content = "Distance:" + item.Distance + "; Name: " + item.Name + "; Id: " + item.GymFuncList + ";OpenCharge:" + item.OpenCharge;
+                            //var li = "<li>" + content + "</li>";
+                            $('#InnerContent').append(l_content);
+
+
+                            //});
                         },
                         error: function (XMLHttpRequest, textStatus, thrownError) {
                             console.log("no");
@@ -395,8 +447,8 @@
                 error: function (XMLHttpRequest, textStatus, thrownError) {
                     console.log(xhr.responseText);
                 }
-                });
-            
+            });
+
         }
 
         function rad(d) {
@@ -417,6 +469,29 @@
             return s;
         }
 
+        function getOpenCharge(URL) {
+
+            var OpenCharge_DataList;
+
+            $.ajax({
+                url: URL,
+                type: 'get',
+                dataType: 'json',
+                contentType: 'application/json',
+                async: false,
+                success: function (data2) {
+
+                    if (data2.GymFuncData[0].OpenCharge == null) {
+
+                        data2.GymFuncData[0].OpenCharge = "沒有資料";
+                    }
+                    OpenCharge_DataList = data2.GymFuncData[0].OpenCharge;
+
+                }
+            });
+            return OpenCharge_DataList;
+
+        }
     </script>
 
     <!-- CSS -->
@@ -457,6 +532,7 @@
     <script type="text/javascript" src="scripts/index.js"></script>
     <script src="scripts/app.js"></script>
     <script src="scripts/JSLINQ.js"></script>
+    <script type="text/javascript" src="../Scripts/json2.min.js"></script>
 </body>
 
 </html>
