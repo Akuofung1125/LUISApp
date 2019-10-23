@@ -279,6 +279,12 @@
 
                                 }
 
+                                if (val2.type.indexOf("評價") >= 0) {
+                                    if (val2.role.indexOf("y") >= 0) {
+                                        l_Rate = "Y";
+                                    }
+                                }
+
                                 //if (val2.type.indexOf("設施屬性") >= 0) {
                                 //    if (val2.type.indexOf("設施屬性::學校") >= 0) {
 
@@ -312,16 +318,8 @@
                                 //    }
                                 //}
 
-                                //if (val2.type.indexOf("評價") >= 0) {
-                                //    if (val2.type.indexOf("評價::好") >= 0) {
-                                //        l_Rate = "Y";
-                                //    }
-                                //    if (val2.type.indexOf("評價::不好") >= 0) {
-                                //        l_Rate = "N";
-                                //    }
-                                //}
-
                             });
+
                         }
 
                     });
@@ -364,11 +362,20 @@
                             var l_DataList = null;
 
                             //var l_DataList2 = null;
+                            if (l_Rate != "") {
 
-                            l_DataList = new JSLINQ(data)
-                                .OrderBy(function (api_ListData) { return api_ListData.Distance })
-                                .ToArray();
+                                if (l_Rate == "Y") {
+                                    l_DataList = new JSLINQ(data)
+                                        .OrderByDescending(function (api_ListData) { return api_ListData.Rate })
 
+                                        .ToArray();
+                                }
+                            }
+                            else {
+                                l_DataList = new JSLINQ(data)
+                                    .OrderBy(function (api_ListData) { return api_ListData.Distance })
+                                    .ToArray();
+                            }
 
 
                             for (var k = 0; k < 5; k++) {
@@ -419,7 +426,7 @@
                                 l_content += "   <div class='post-header font-alt'>";
                                 l_content += "  <h2 class='post-title'><a href='blog-single-left.html'>" + l_DataList[i].Name + "</a></h2>";
                                 l_content += "   <div class='post-meta'>";
-                                l_content += l_DataList[i].GymFuncList + "<br>電話:" + l_DataList[i].OperationTel + "<br>距離：" + l_DataList[i].Distance + "<br>收費方式:" + l_DataList[i].OpenCharge;
+                                l_content += l_DataList[i].GymFuncList + "<br>電話:" + l_DataList[i].OperationTel + "<br>距離：" + l_DataList[i].Distance + "<br>收費方式:" + l_DataList[i].OpenCharge + "<br>評價:" + l_DataList[i].Rate;
                                 l_content += " </div>";
                                 l_content += " </div>";
                                 l_content += "  <div class='post-more'>";
