@@ -1,0 +1,464 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+
+    <title>智能化運動場館租借推薦系統</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <meta name="format-detection" content="telephone=no">
+    <meta name="msapplication-tap-highlight" content="no">
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+    <link rel="stylesheet" type="text/css" href="css/index.css">
+
+
+</head>
+<body>
+    <!-- Preloader -->
+    <div class="page-loader">
+        <div class="loader">Loading...</div>
+    </div>
+
+    <!-- Navigation start -->
+    <nav class="navbar navbar-custom navbar-transparent navbar-fixed-top one-page" role="navigation">
+
+        <div class="container">
+
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#custom-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="index.html"><font size="3">智能化運動場館租借推薦系統</font></a>
+            </div>
+
+        </div>
+
+    </nav>
+    <!-- Navigation end -->
+    <!-- Home start -->
+    <section id="home" class="home-section home-parallax home-fade bg-dark-60" data-background="assets/images/section-3.jpg">
+
+        <div class="hs-caption">
+            <div class="caption-content">
+                <div class="container">
+
+                    <div class="row">
+
+                        <div class="col-sm-6 col-md-6 col-lg-4 col-lg-offset-2">
+
+                            <div class="callout-text font-alt">
+                                <h3 class="callout-title">今天要租借什麼場地呢?</h3>
+                                我們將會推薦您最適合的場所
+                            </div>
+
+                        </div>
+
+                        <div class="col-sm-6 col-md-6 col-lg-4">
+
+                            <div class="callout-btn-box">
+
+                                <form id="subscription-form" role="form">
+                                    <div class="input-group">
+                                        <input type="text" id="txtKeyword" name="keyword" class="form-control" placeholder="請在此輸入您想租借的場館" required data-validation-required-message="隨意輸入運動或場地關鍵字">
+                                        <span class="input-group-btn">
+                                            <button type="button" onclick="getSportData()" id="btnSelect" class="btn btn-g btn-round">搜尋</button>
+                                        </span>
+                                    </div>
+                                </form>
+
+                                <!-- Ajax response -->
+                                <div id="subscription-response" class="ajax-response"></div>
+                                <div>
+                                    <ul id="result"></ul>
+                                </div>
+                            </div>
+                            <script src="assets/js/jquery.flexslider-min.js"></script>
+
+                        </div>
+
+                    </div><!-- .row -->
+
+                </div>
+
+            </div>
+        </div>
+
+    </section>
+    <!-- Home end -->
+    <!-- Wrapper start -->
+    <div class="main">
+        <!-- Latest blog posts start -->
+        <section id="news" class="module">
+            <div class="container">
+
+                <div class="row">
+
+                    <div class="col-sm-6 col-sm-offset-3" id="HeaderContent">
+
+
+
+
+                    </div><!-- .row -->
+
+                    <div class="row multi-columns-row post-columns" id="InnerContent">
+
+
+
+
+                    </div><!-- .row -->
+                </div>
+            </div>
+        </section>
+        <!-- Latest blog posts end -->
+        <!-- Footer start -->
+        <footer class="footer bg-dark">
+            <div class="container">
+
+                <div class="row">
+
+                    <div class="col-sm-6">
+                        <p class="copyright font-alt">© 2018 <a href="index.html"> 子翔 </a>, All Rights Reserved.</p>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <div class="footer-social-links">
+                            <a href="#"><i class="fa fa-facebook"></i></a>
+                            <a href="#"><i class="fa fa-twitter"></i></a>
+                            <a href="#"><i class="fa fa-dribbble"></i></a>
+                            <a href="#"><i class="fa fa-skype"></i></a>
+                        </div>
+                    </div>
+
+                </div><!-- .row -->
+
+            </div>
+        </footer>
+        <!-- Footer end -->
+
+    </div>
+    <!-- Wrapper start -->
+    <!-- Scroll-up -->
+    <div class="scroll-up">
+        <a href="#totop"><i class="fa fa-angle-double-up"></i></a>
+    </div>
+
+    <script>
+        function getSportData() {
+            var l_Latitude = "";
+            var l_Longitude = "";
+           /* $cordovaGeolocation
+                .getCurrentPosition(posOptions)
+                .then(function (position) {
+                l_Latitude = position.coords.latitude
+                l_Longitude = position.coords.longitude
+                return (l_LandAttr , l_Latitude);
+                } */
+
+            var l_LuisUrl = "https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/d74420dc-08f6-4e44-be87-b8357b4a4a5f?verbose=true&timezoneOffset=0&subscription-key=a2df65d66e684db08e01ea6419e93ba1&q=";
+            var l_IPlayUrl = "http://iplay.sa.gov.tw/api/GymSearchAllList?$format=application/json;odata.metadata=none";
+
+            var l_City = "";
+            var l_KeyWord = "";
+            var l_LandAttr = "";
+            var l_OpenState = "";
+            var l_RentState = "";
+            var l_Rate = "";
+            var txtKeyword = $('#txtKeyword').val();
+
+            console.log(encodeURI(encodeURI(txtKeyword)));
+            $.ajax({ //用jQuery的$.Ajax()去向後端取得JSON資料來源
+                url: l_LuisUrl + encodeURI(encodeURI(txtKeyword)),
+                type: 'get',
+                dataType: 'json', //在JavaScript之中，表示物件的一種格式
+                contentType: 'application/x-www-form-urlencoded;charset=UTF-8',
+                success: function (data) {                   
+                    $.each(data, function (key1, val1) {
+                        if (key1 == "entities") {
+                            $.each(val1, function (key2, val2) {
+                                if (val2.type == "城市") {
+                                    l_City = val2.resolution.values[0];
+                                    console.log(l_City);
+                                }
+                                
+                                if (val2.type.indexOf("設施項目") >= 0) {
+                                    if (val2.role.indexOf("羽球場") >= 0) {
+                                        l_KeyWord = "&GymType=羽球場";
+                                        console.log(l_KeyWord)
+                                    }
+                                    if (val2.role.indexOf("籃球場") >= 0) {
+                                        l_KeyWord = "&GymType=籃球場";
+                                        console.log(l_KeyWord)
+                                    }
+                                    if (val2.role.indexOf("排球場") >= 0) {
+                                        l_KeyWord = "&GymType=排球場";
+                                        console.log(l_KeyWord)
+                                    }
+                                    if (val2.role.indexOf("桌球館") >= 0) {
+                                        l_KeyWord = "&GymType=桌球館";
+                                        console.log(l_KeyWord)
+                                    }
+                                    if (val2.role.indexOf("棒球場") >= 0) {
+                                        l_KeyWord = "&GymType=棒球場";
+                                        console.log(l_KeyWord)
+                                    }
+                                    if (val2.role.indexOf("游泳池") >= 0) {
+                                        l_KeyWord = "&GymType=游泳池";
+                                        console.log(l_KeyWord)
+                                    }
+                                    if (val2.role.indexOf("網球場") >= 0) {
+                                        l_KeyWord = "&GymType=網球場";
+                                        console.log(l_KeyWord)
+                                    }
+                                    if (val2.role.indexOf("足球場") >= 0) {
+                                        l_KeyWord = "&GymType=足球場";
+                                        console.log(l_KeyWord)
+                                    } if (val2.role.indexOf("高爾夫球場") >= 0) {
+                                        l_KeyWord = "&GymType=高爾夫球場";
+                                        console.log(l_KeyWord)
+                                    }
+                                }
+                                /*
+                                    if (val2.type.indexOf("設施屬性") >= 0) {
+                                        if (val2.type.indexOf("設施屬性::學校") >= 0) {
+                                            l_LandAttr = "&LandAttr=學校";
+                                            console.log(l_LandAttr)
+                                        }
+                                        if (val2.type.indexOf("設施屬性::民營") >= 0) {
+                                            l_LandAttr = "&LandAttr=民營";
+                                            console.log(l_LandAttr)
+                                        }
+                                        if (val2.type.indexOf("設施屬性::運動園區") >= 0) {
+                                            l_LandAttr = "&LandAttr=運動園區";
+                                            console.log(l_LandAttr)
+                                        }
+                                        if (val2.type.indexOf("設施屬性::公園") >= 0) {
+                                            l_LandAttr = "&LandAttr=公園";
+                                            console.log(l_LandAttr)
+                                        }
+                                        if (val2.type.indexOf("設施屬性::公有(不含學校、公園、運動園區)") >= 0) {
+                                            l_LandAttr = "&LandAttr=公有(不含學校、公園、運動園區)";
+                                            console.log(l_LandAttr)
+                                        }
+                                    }  */
+
+                                    if (val2.type.indexOf("開放情況") >= 0) {
+                                        if (val2.role.indexOf("免費開放使用") >= 0) {
+                                            l_OpenState = "&OpenState=免費開放使用";
+                                            console.log(l_OpenState)
+
+                                        }
+                                        if (val2.role.indexOf("付費開放使用") >= 0) {
+                                            l_OpenState = "&OpenState=付費開放使用";
+                                            console.log(l_OpenState)
+                                        }
+                                        if (val2.role.indexOf("不開放使用") >= 0) {
+                                            l_OpenState = "&OpenState=不開放使用";
+                                            console.log(l_OpenState)
+                                        }
+                                    }
+                                /*
+                                    if (val2.type.indexOf("租借資訊") >= 0) {
+                                        if (val2.type.indexOf("免費租借") >= 0) {
+                                            l_RentState = "&RentState=免費租借";
+                                            console.log(l_RentState)
+
+                                        }
+                                        if (val2.type.indexOf("付費租借") >= 0) {
+                                            l_RentState = "&RentState=付費租借";
+                                            console.log(l_RentState)
+                                        }
+                                        if (val2.type.indexOf("不開放租借") >= 0) {
+                                            l_RentState = "&RentState=不開放租借";
+                                            console.log(l_RentState)
+                                        }
+                                    }    */
+
+                                    if (val2.type.indexOf("評價") >= 0) {
+                                        if (val2.role.indexOf("y") >= 0) {
+                                            l_Rate = "Y";
+                                            console.log(l_Rate)
+                                        }                                      
+                                    }
+                            });
+                        }
+
+                    });
+
+
+                    if (l_City != "") {
+                        l_IPlayUrl += "&City=" + encodeURI(l_City);
+                    }
+                    if (l_KeyWord != "") {
+                        l_IPlayUrl += encodeURI(l_KeyWord);
+                    }
+                    if (l_LandAttr != "") {
+                        l_IPlayUrl += encodeURI(l_LandAttr);
+                    }
+                    if (l_OpenState != "") {
+                        l_IPlayUrl += encodeURI(l_OpenState);
+                    }
+                    if (l_RentState != "") {
+                        l_IPlayUrl += encodeURI(l_RentState);
+                    } //分析Data ，組運動場館URL
+
+
+                    console.log(l_IPlayUrl);
+                 
+                 
+                        $.ajax({
+                            url: l_IPlayUrl,
+                            type: 'get',
+                            dataType: 'json',
+                            contentType: 'application/json',
+                            success: function (data) {
+
+                                $('#innerContent').empty();
+                                var l_Latitude = "";
+                                var l_Longitude = "";
+                               
+
+                                for (var j = 0; j < data.length; j++) {
+                                    data[j].Distance = getDistance(l_Longitude, l_Latitude, data[j].LatLng.split(",")[1], data[j].LatLng.split(",")[0])
+                                }
+                                var l_DataList = null;
+                                var l_DataList1 = [];
+
+                                if (l_Rate != "") {
+
+                                    if (l_Rate == "Y") {
+                                        l_DataList = new JSLINQ(data)
+                                            .OrderByDescending(function (p_dateListData) { return p_dateListData.Rate })
+                                            .ToArray();
+                                    }
+                                }else {
+                                        l_DataList = new JSLINQ(data)
+                                            .OrderBy(function (p_dateListData) { return p_dateListData.Distance })
+                                            .ToArray();
+                            }
+                                var b = "";
+                               
+                                for (var a = 0; a < data.length; a++) {
+                                    b = l_DataList[a].GymID;                
+                                    var l_IPlayURL = "https://iplay.sa.gov.tw/odata/Gym(" + b + ")?$format=application/json;odata.metadata=none&$expand=GymFuncData";
+                                    //console.log(b);
+                                    //console.log(l_IPlayURL);
+                                    $.ajax({
+                                        url: l_IPlayURL,
+                                        type: 'get',
+                                        dataType: 'json',
+                                        contentType: 'application/json',
+
+                                        success: function (data1) {
+                                            var l_DataList1 = null;
+
+                                            if (data1.GymFuncData[0].OpenCharge == null) {
+                                                data1.GymFuncData[0].OpenCharge = "沒";
+                                            }
+                                            l_DataList1 = data1;
+
+                                        }
+                                    })                                                                       
+                                }
+                            
+                                
+
+                                var l_headerContent = "<h2 class='module-title font-alt'>以下是最適合您且最近的運動場館</h2>";
+                                l_headerContent += "<div class='module-subtitle font-serif' >";
+                                l_headerContent += "我們依您目前的位置，搜尋出距離您最近到最遠的運動場地，您可以往下滑行查看。";
+                                l_headerContent += "</div>";
+
+                                var details = "";
+                                for (var i = 0; i < data.length; i++) {
+                                    details += "<a href='javascript:void(0)'><img src='" + l_DataList[i].Photo1 + "'alt=''></a>";
+                                    details += "<h2 class='post-title'><a href='blog-single-left.html'>" + l_DataList[i].GymID + l_DataList[i].Name + "</a></h2>";
+                                    details += l_DataList[i].GymFuncList;
+                                    details += "<li>" + "距離:" + l_DataList[i].Distance + "|" + " 電話:" + l_DataList[i].OperationTel + "</li>";
+                                    details += "<li>" + "收費方式:" + l_DataList[i].OpenCharge + "|"  + "評價" + l_DataList[i].Rate + "</li>";
+                                   
+                                }
+                              /*  $.each(l_DataList, function (i, item) {
+                                    details += "<li>" + item.GymID + i + "|" + item.Name + "|" + item.Distance + "|" + item.Rate + "|" + item.OpenCharge + "</li>";    
+                                    });*/
+                                //每一個元素上執行回調函數，叠代的靜態方法。
+
+                                    $('#HeaderContent').html(l_headerContent)
+                                    $('#InnerContent').append(details)
+                                }
+                            
+                        });
+                },
+
+                error: function (XMLHttpRequest, textStatus, thrownError) {
+                    console.log(xhr.responseText);
+                }
+            });
+           
+            //將用角度表示的角轉換為近似相等的用弧度表示的角 java Math.toRadians
+            function rad(d) {
+                return d * Math.PI / 180.0;
+            }
+
+            function getDistance(lng1, lat1, lng2, lat2) { //lng經度 lat緯度
+                var EARTH_RADIUS = 6378.137; //地球半徑
+                var radLat1 = rad(lat1); //rad弧度
+                var radLat2 = rad(lat2);
+                var a = radLat1 - radLat2;
+                var b = rad(lng1) - rad(lng2);
+                var s = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(a / 2), 2) //sin正弦
+                    + Math.cos(radLat1) * Math.cos(radLat2)
+                    * Math.pow(Math.sin(b / 2), 2)));
+                s = s * EARTH_RADIUS;
+                s = Math.round(s * 10000) / 10000;
+                return s;
+            }
+
+          
+
+
+        }
+    </script>
+
+
+    <!-- CSS -->
+    <link href="assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/css/simpletextrotator.css" rel="stylesheet">
+    <link href="assets/css/font-awesome.min.css" rel="stylesheet">
+    <link href="assets/css/et-line-font.css" rel="stylesheet">
+    <link href="assets/css/magnific-popup.css" rel="stylesheet">
+    <link href="assets/css/flexslider.css" rel="stylesheet">
+    <link href="assets/css/owl.carousel.css" rel="stylesheet">
+    <link href="assets/css/animate.css" rel="stylesheet">
+    <link href="assets/css/style.css" rel="stylesheet">
+    <!-- Javascript files -->
+    <script type="text/html" src="js/jquery-ui/jquery-ui.min.js">
+    </script>
+    <script src="assets/js/jquery-2.1.3.min.js"></script>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="scripts/angular.min.js"></script>
+    <script src="scripts/ng-cordova.min.js"></script>
+    <script src="assets/js/jquery.mb.YTPlayer.min.js"></script>
+    <script src="assets/js/appear.js"></script>
+    <script src="assets/js/jquery.simple-text-rotator.min.js"></script>
+    <script src="assets/js/jqBootstrapValidation.js"></script>
+    <script src="http://maps.google.com/maps/api/js?sensor=true"></script>
+    <script src="assets/js/gmaps.js"></script>
+    <script src="assets/js/isotope.pkgd.min.js"></script>
+    <script src="assets/js/imagesloaded.pkgd.js"></script>
+    <script src="assets/js/jquery.flexslider-min.js"></script>
+    <script src="assets/js/jquery.magnific-popup.min.js"></script>
+    <script src="assets/js/jquery.fitvids.js"></script>
+    <!--<script src="assets/js/smoothscroll.js"></script>   -->
+    <script src="assets/js/wow.min.js"></script>
+    <script src="assets/js/owl.carousel.min.js"></script>
+    <script src="assets/js/contact.js"></script>
+    <script src="assets/js/custom.js"></script>
+    <script src="assets/js/LUIS.js"></script>
+    <script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" src="scripts/platformOverrides.js"></script>
+    <script type="text/javascript" src="scripts/index.js"></script>
+    <script src="scripts/app.js"></script>
+    <script src="scripts/JSLINQ.js"></script>
+</body>
+
+</html>
