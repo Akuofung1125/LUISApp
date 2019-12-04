@@ -18,7 +18,7 @@
     <link href="assets/css/owl.carousel.css" rel="stylesheet">
     <link href="assets/css/animate.css" rel="stylesheet">
     <link href="assets/css/style.css" rel="stylesheet">
- 
+
 </head>
 <body>
     <!-- Preloader -->
@@ -70,7 +70,7 @@
 
                                 <form id="subscription-form" role="form">
                                     <div class="input-group">
-                                        <input type="text"  autocomplete="on" id="txtKeyword" name="keyword" class="form-control" placeholder="請在此輸入您想找的場館" required data-validation-required-message="隨意輸入運動或場地關鍵字">
+                                        <input type="text" autocomplete="on" id="txtKeyword" name="keyword" class="form-control" placeholder="請在此輸入您想找的場館" required data-validation-required-message="隨意輸入運動或場地關鍵字">
                                         <span class="input-group-btn">
                                             <button type="button" onclick="getSportData()" id="btnSelect" class="btn btn-g btn-round">搜尋</button>
 
@@ -157,7 +157,7 @@
     </div>
 
 
-    <script>
+    <!--<script>
         function getSportData() {
             $('#InnerContent').empty();
             $('#HeaderContent').empty();
@@ -170,7 +170,7 @@
             var l_OpenState = "";
             var l_Country = "";
             var txtKeyword = $('#txtKeyword').val();
-
+            console.log(l_LuisUrl);
             console.log(encodeURI(encodeURI(txtKeyword)));
 
             var l_Latitude = "";
@@ -372,7 +372,7 @@
                         var l_NullContent = "";
                         l_NullContent += "  <div class='module-subtitle font-serif' >";
                         l_NullContent += "無法找出適合您的場所，請換句話說";
-                        l_NullContent += "</div >"; 
+                        l_NullContent += "</div >";
                         $('#HeaderContent').html(l_NullContent);
                     }
                     else {
@@ -404,47 +404,51 @@
                                 //var l_DataList2 = null;
 
                                 if (l_Rate != "") {
-
-                                    if (l_Rate == "Y") {
-                                        l_DataList = new JSLINQ(data)
-                                            .OrderByDescending(function (api_ListData) { return api_ListData.Rate })
-
-                                            .ToArray();
-                                    }
                                     if (data.Distance != "") {
                                         l_DataList = new JSLINQ(data)
                                             .OrderBy(function (api_ListData) { return api_ListData.Distance })
                                             .ToArray();
+
+                                        console.log(l_DataList)
+
+
                                     }
+                                    if (l_Rate == "Y") {
+                                        l_DataList = new JSLINQ(data)
+                                            .Where(function (api_ListData) { return api_ListData.Rate >= "3"; })
+                                            .OrderByDescending(function (api_ListData) { return api_ListData.Rate })
+                                            .ToArray();
                                     }
+                                    console.log(l_DataList)
+                                }
                                 else {
                                     l_DataList = new JSLINQ(data)
                                         .OrderBy(function (api_ListData) { return api_ListData.Distance })
                                         .ToArray();
                                 }
                                 console.log(l_DataList.length)
-                                if (l_DataList.length <= 2) {
-                                    for (var k = 0; k <=1; k++) {
+                                //if (l_DataList.length <= 2) {
+                                //    for (var k = 0; k <= 1; k++) {
 
-                                        var C = l_DataList[k].GymID;
-                                        var l_IPlayUrlCharge = "http://iplay.sa.gov.tw/odata/Gym(" + C + ")?$format=application/json;odata.metadata=none&$expand=GymFuncData";
-                                        //l_DataList[k].OpenDay = obj.OpenDay_DataList;
-                                        //l_DataList[k].WebUrl = obj.OpenWebUrl_DataList;
-                                        l_DataList[k].OpenDay = getOpenDay(l_IPlayUrlCharge);
-                                        //l_DataList[k].PassEasyFuncOthers = getPassEasyFuncOthers(l_IPlayUrlCharge);
-                                    }
-                                }
-                                else {
-                                    for (var k = 0; k < 5; k++) {
+                                //        var C = l_DataList[k].GymID;
+                                //        var l_IPlayUrlCharge = "http://iplay.sa.gov.tw/odata/Gym(" + C + ")?$format=application/json;odata.metadata=none&$expand=GymFuncData";
+                                //        //l_DataList[k].OpenDay = obj.OpenDay_DataList;
+                                //        //l_DataList[k].WebUrl = obj.OpenWebUrl_DataList;
+                                //        l_DataList[k].OpenDay = getOpenDay(l_IPlayUrlCharge);
+                                //        //l_DataList[k].PassEasyFuncOthers = getPassEasyFuncOthers(l_IPlayUrlCharge);
+                                //    }
+                                //}
+                                //else {
+                                //    for (var k = 0; k < 4; k++) {
 
-                                        var C = l_DataList[k].GymID;
-                                        var l_IPlayUrlCharge = "http://iplay.sa.gov.tw/odata/Gym(" + C + ")?$format=application/json;odata.metadata=none&$expand=GymFuncData";
-                                        //l_DataList[k].OpenDay = obj.OpenDay_DataList;
-                                        //l_DataList[k].WebUrl = obj.OpenWebUrl_DataList;
-                                        l_DataList[k].OpenDay = getOpenDay(l_IPlayUrlCharge);
-                                        //l_DataList[k].PassEasyFuncOthers = getPassEasyFuncOthers(l_IPlayUrlCharge);
-                                    }
-                                }
+                                //        var C = l_DataList[k].GymID;
+                                //        var l_IPlayUrlCharge = "http://iplay.sa.gov.tw/odata/Gym(" + C + ")?$format=application/json;odata.metadata=none&$expand=GymFuncData";
+                                //        //l_DataList[k].OpenDay = obj.OpenDay_DataList;
+                                //        //l_DataList[k].WebUrl = obj.OpenWebUrl_DataList;
+                                //        l_DataList[k].OpenDay = getOpenDay(l_IPlayUrlCharge);
+                                //        //l_DataList[k].PassEasyFuncOthers = getPassEasyFuncOthers(l_IPlayUrlCharge);
+                                //    }
+                                //}
 
                                 var l_content = "";
                                 var l_headerContent = "      <h2 class='module-title font-alt'>以下是最適合您且最近的運動場館</h2>";
@@ -454,16 +458,16 @@
                                 var l_length = (l_DataList.length > 30) ? 30 : l_DataList.length
 
                                 //$.each(l_DataList, function (i, item) {
-                                for (var i = 0; i < data.length; i++) {
+                                for (var i = 0; i < l_DataList.length; i++) {
                                     l_content += "<div class='col-sm-6 col-md-4 col-lg-4'>";
                                     l_content += "<div class='post mb-20' >";
                                     l_content += "<div class='post-thumbnail'>";
                                     l_content += "<a href='javascript:void(0)'><img src='" + l_DataList[i].Photo1 + "'></a>";
                                     l_content += "</div>";
                                     l_content += "<div class='post-header font-alt'>";
-                                    l_content += "<h2 class='post-title'><a href=https://iplay.sa.gov.tw/gyminfo/index/" + l_DataList[i].GymID + " >" + l_DataList[i].Name + " " + "(" + l_DataList[i].OpenDay + ")" + " </a></h2>";
-                                    l_content += "<div class='post-meta'>";
-                                    l_content += l_DataList[i].GymFuncList + "<br>電話:" + l_DataList[i].OperationTel + "<br>距離：" + l_DataList[i].Distance + "公里" + "<br>無障礙設施：" + "無" + "<br>評價:" + l_DataList[i].Rate;
+                                    l_content += "<h2 class='post-title' style=" + "font-size:large;" + "font-weight:bold;" + "><a href=https://iplay.sa.gov.tw/gyminfo/index/" + l_DataList[i].GymID + " >" + l_DataList[i].Name + " " + "(" + l_DataList[i].OpenDay + ")" + " </a></h2>";
+                                    l_content += "<br><div class='post-meta'style=" + "color:#007799;" + "font-size:small;" + ">";
+                                    l_content += l_DataList[i].GymFuncList + "<br>電話:" + l_DataList[i].OperationTel + "<br>距離：" + l_DataList[i].Distance + "公里" + "<br>無障礙設施：" + "無" + "<br>評價:" + l_DataList[i].Rate + "<br>開放情況:" + l_DataList[i].OpenState;
                                     l_content += "</div>";
                                     l_content += "</div>";
                                     l_content += "<div class='post-more'>";
@@ -486,7 +490,7 @@
 
                     }
                 },
-                error: function (XHR, textStatus, thrownError) {
+                error: function (xhr, textStatus, thrownError) {
                     console.log(xhr.responseText);
                 }
             });
@@ -520,108 +524,109 @@
             return s;
         }
 
-        function getOpenDay(URL) {
+        //function getOpenDay(URL) {
 
-            var OpenCharge_DataList;
-            var OpenDay_DataList;
+        //    var OpenCharge_DataList;
+        //    var OpenDay_DataList;
 
-            $.ajax({
-                url: URL,
-                type: 'get',
-                dataType: 'json',
-                contentType: 'application/json',
-                async: false,
-                success: function (data2) {
+        //    $.ajax({
+        //        url: URL,
+        //        type: 'get',
+        //        dataType: 'json',
+        //        contentType: 'application/json',
+        //        async: false,
+        //        success: function (data2) {
 
-                    //if (data2.GymFuncData[0].OpenCharge == null) {
+        //            //if (data2.GymFuncData[0].OpenCharge == null) {
 
-                    //    data2.GymFuncData[0].OpenCharge = "沒有資料";
+        //            //    data2.GymFuncData[0].OpenCharge = "沒有資料";
+        //            //}
+        //            if (data2.GymFuncData[0].OpenDaySat == true) {
+        //                OpenDay_DataList = "本日開放";
+        //            }
+        //            else {
+
+        //                OpenDay_DataList = "本日不開放";
+
+        //            }
+
+        //            //OpenCharge_DataList = data2.GymFuncData[0].OpenCharge;
+
+        //        }
+        //    });
+
+        //    return OpenDay_DataList;
+
+        //}
+
+                    //function getPassEasyFuncOthers(URL) {
+
+                    //    var OpenPassEasyFuncOthers_DataList;
+
+                    //    $.ajax({
+                    //        url: URL,
+                    //        type: 'get',
+                    //        dataType: 'json',
+                    //        contentType: 'application/json',
+                    //        async: false,
+                    //        success: function (data2) {
+
+                    //            if (data2.PassEasyFuncOthers == null || false) {
+
+                    //                data2.PassEasyFuncOthers = "無";
+                    //                OpenPassEasyFuncOthers_DataList = data2.PassEasyFuncOthers;
+                    //            }
+                    //            else {
+                    //                OpenPassEasyFuncOthers_DataList = data2.PassEasyFuncOthers;
+                    //            }
+
+                    //        }
+                    //    });
+                    //    return OpenPassEasyFuncOthers_DataList;
+
                     //}
-                    if (data2.GymFuncData[0].OpenDaySat == true) {
-                        OpenDay_DataList = "本日開放";
-                    }
-                    else {
-
-                        OpenDay_DataList = "本日不開放";
-
-                    }
-
-                    //OpenCharge_DataList = data2.GymFuncData[0].OpenCharge;
-
-                }
-            });
-
-            return OpenDay_DataList;
-
-        }
-
-            //function getPassEasyFuncOthers(URL) {
-
-            //    var OpenPassEasyFuncOthers_DataList;
-
-            //    $.ajax({
-            //        url: URL,
-            //        type: 'get',
-            //        dataType: 'json',
-            //        contentType: 'application/json',
-            //        async: false,
-            //        success: function (data2) {
-
-            //            if (data2.PassEasyFuncOthers == null || false) {
-
-            //                data2.PassEasyFuncOthers = "無";
-            //                OpenPassEasyFuncOthers_DataList = data2.PassEasyFuncOthers;
-            //            }
-            //            else {
-            //                OpenPassEasyFuncOthers_DataList = data2.PassEasyFuncOthers;
-            //            }
-
-            //        }
-            //    });
-            //    return OpenPassEasyFuncOthers_DataList;
-
-            //}
 
 
-            //function getOpenDay(URL) {
+                    //function getOpenDay(URL) {
 
-            //    var OpenCharge_DataList;
-            //    var OpenDay_DataList;
-            //    var OpenWebUrl_DataList;
+                    //    var OpenCharge_DataList;
+                    //    var OpenDay_DataList;
+                    //    var OpenWebUrl_DataList;
 
-            //    $.ajax({
-            //        url: URL,
-            //        type: 'get',
-            //        dataType: 'json',
-            //        contentType: 'application/json',
-            //        async: false,
-            //        success: function (data2) {
+                    //    $.ajax({
+                    //        url: URL,
+                    //        type: 'get',
+                    //        dataType: 'json',
+                    //        contentType: 'application/json',
+                    //        async: false,
+                    //        success: function (data2) {
 
-            //            //if (data2.GymFuncData[0].OpenCharge == null) {
+                    //            //if (data2.GymFuncData[0].OpenCharge == null) {
 
-            //            //    data2.GymFuncData[0].OpenCharge = "沒有資料";
-            //            //}
-            //            if (data2.GymFuncData[0].OpenDaySat == true) {
-            //                OpenDay_DataList = "本日開放";
-            //            }
-            //            else {
+                    //            //    data2.GymFuncData[0].OpenCharge = "沒有資料";
+                    //            //}
+                    //            if (data2.GymFuncData[0].OpenDaySat == true) {
+                    //                OpenDay_DataList = "本日開放";
+                    //            }
+                    //            else {
 
-            //                OpenDay_DataList = "本日不開放";
+                    //                OpenDay_DataList = "本日不開放";
 
-            //            }
-            //            OpenWebUrl_DataList = data2.WebUrl;
+                    //            }
+                    //            OpenWebUrl_DataList = data2.WebUrl;
 
-            //            //OpenCharge_DataList = data2.GymFuncData[0].OpenCharge;
+                    //            //OpenCharge_DataList = data2.GymFuncData[0].OpenCharge;
 
-            //        }
-            //    });
-            //    return { 'OpenDay_DataList': OpenDay_DataList, 'OpenWebUrl_DataList': OpenWebUrl_DataList};
+                    //        }
+                    //    });
+                    //    return { 'OpenDay_DataList': OpenDay_DataList, 'OpenWebUrl_DataList': OpenWebUrl_DataList};
 
-            //}
+                    //}
 
-    </script>
+    </script>-->
 
     <!-- Javascript files -->
+    <script src="scripts/app.js"></script>
     <script type="text/html" src="js/jquery-ui/jquery-ui.min.js"></script>
     <script src="assets/js/jquery-2.1.3.min.js"></script>
     <script src="assets/bootstrap/js/bootstrap.min.js"></script>
